@@ -4,6 +4,7 @@ import logging
 import typing
 import TwitterAPI as twitter_api
 import time
+import json
 
 
 class TwitterDataStream(threading.Thread):
@@ -24,7 +25,7 @@ class TwitterDataStream(threading.Thread):
         self.daemon = True
         self._logger = logger
         self.topics = topics
-        # self.kinesis = kinesis
+        self.kinesis = kinesis
         self.twitter = twitter
         self._count = 0
         self._start_time = 0
@@ -59,11 +60,11 @@ class TwitterDataStream(threading.Thread):
                         break
                     with self.data_lock:
                         self.latest_tweet = item
-                    # self.kinesis.put_record(
-                    #     StreamName="twitter",
-                    #     Data=json.dumps(item),
-                    #     PartitionKey=item.get('id'),
-                    # )
+                    self.kinesis.put_record(
+                        StreamName='twitter_stream',
+                        Data=json.dumps(item),
+                        PartitionKey=item.get('id_str'),
+                    )
                     self._count += 1
                     if self._logger is not None:
                         info = item.get('user').get('screen_name')

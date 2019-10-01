@@ -25,13 +25,12 @@ dictConfig({
 })
 
 app = flask.Flask(__name__)
-# kinesis = boto3.client(
-#     'kinesis',
-#     aws_access_key_id=CONSTANTS.get('AWS').get('aws_access_key_id'),
-#     aws_secret_access_key=CONSTANTS.get('AWS').get('aws_secret_access_key'),
-#     region_name=CONSTANTS.get('AWS').get('region_name'),
-# )
-kinesis = None
+kinesis = boto3.client(
+    'kinesis',
+    aws_access_key_id=CONSTANTS.get('AWS').get('aws_access_key_id'),
+    aws_secret_access_key=CONSTANTS.get('AWS').get('aws_secret_access_key'),
+    region_name=CONSTANTS.get('AWS').get('region_name'),
+)
 twitter_client = twitter.TwitterAPI(
     CONSTANTS.get('TWITTER').get('consumer_key'),
     CONSTANTS.get('TWITTER').get('consumer_secret'),
