@@ -59,7 +59,7 @@ class TwitterDataStream(threading.Thread):
                     if self._stopevent.isSet():
                         break
                     with self.data_lock:
-                        self.latest_tweet = item
+                        self.__class__.latest_tweet = item
                     self.kinesis.put_record(
                         StreamName='twitter_stream',
                         Data=json.dumps(item),

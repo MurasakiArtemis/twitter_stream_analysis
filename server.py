@@ -50,19 +50,21 @@ hook = twitter_hook.TwitterDataStream(
 def index():
     if hook.is_alive():
         latest_tweet = twitter_hook.TwitterDataStream.latest_tweet
-        return {
+        json_response = flask.jsonify({
             'name': latest_tweet.get('user').get('screen_name'),
-            'time': dateutil.parse(
+            'time': dateutil.parser.parse(
                 latest_tweet.get('created_at')
             ).strftime("%B %d, %Y – %H:%M %z"),
-            'tweet': json.dumps(latest_tweet),
-        }
+            'tweet': latest_tweet,
+        })
+        status = CONSTANTS.get('HTTP_STATUS').get('200_OK')
     else:
         json_response = flask.jsonify({'error': 'Service not started'})
-        return flask.make_response(
-            json_response,
-            CONSTANTS.get('HTTP_STATUS').get('404_NOT_FOUND'),
-        )
+        status = CONSTANTS.get('HTTP_STATUS').get('404_NOT_FOUND')
+    return flask.make_response(
+        json_response,
+        status,
+    )
 
 
 @app.route(CONSTANTS.get('ENDPOINT').get('START'))
